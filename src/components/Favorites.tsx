@@ -48,7 +48,7 @@ export default function Favorites() {
                   height={480}
                   loading={index === 0 ? "eager" : "lazy"}
                   decoding="async"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                  className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.05]"
                 />
                 <span className="absolute left-4 top-4 inline-flex h-9 min-w-9 items-center justify-center rounded-full bg-tomato px-2 font-body text-xs font-bold text-white tabular-nums">
                   {String(index + 1).padStart(2, "0")}

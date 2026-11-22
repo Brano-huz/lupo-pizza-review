@@ -401,6 +401,112 @@
   }
 }
 
+/* --- Jemné animácie: hero (mount-only) --- */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hero-image-enter {
+  from { opacity: 0; transform: scale(1.02); }
+  to { opacity: 1; transform: scale(1); }
+}
+.hero-rise { animation: hero-rise 720ms cubic-bezier(.16, 1, .3, 1) both; }
+.hero-fade { animation: hero-fade 700ms ease-out both; }
+.hero-image-enter { animation: hero-image-enter 900ms cubic-bezier(.16, 1, .3, 1) both; transform-origin: center center; }
+.hero-delay-1 { animation-delay: 90ms; }
+.hero-delay-2 { animation-delay: 180ms; }
+.hero-delay-3 { animation-delay: 270ms; }
+.hero-delay-4 { animation-delay: 360ms; }
+
+/* --- Jemné animácie: navigácia --- */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(.4);
+  transform-origin: left center;
+  transition: opacity 240ms ease, transform 320ms cubic-bezier(.16, 1, .3, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover::after { opacity: 1; transform: scaleX(1); }
+}
+.nav-link:focus-visible::after,
+.nav-link[aria-current="location"]::after { opacity: 1; transform: scaleX(1); }
+.hamburger-line { transition: opacity 220ms ease, transform 260ms cubic-bezier(.16, 1, .3, 1); }
+.mobile-drawer { opacity: 0; visibility: hidden; transition: opacity 280ms ease, visibility 280ms step-end; }
+.mobile-drawer[data-open="true"] { opacity: 1; visibility: visible; transition: opacity 280ms ease, visibility 0s; }
+.mobile-drawer:not([data-open="true"]) { pointer-events: none; }
+.mobile-drawer__panel {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms ease, transform 360ms cubic-bezier(.16, 1, .3, 1);
+}
+.mobile-drawer[data-open="true"] .mobile-drawer__panel { opacity: 1; transform: translateY(0); }
+
+/* --- Jemné animácie: filter menu a karty --- */
+.filter-row {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms ease, transform 260ms cubic-bezier(.16, 1, .3, 1);
+}
+.filter-row[data-phase="out"],
+.filter-row[data-phase="in"] { opacity: .15; transform: translateY(4px); }
+/* Ponecháme existujúci hover prechod riadkov (.menu-row)-popri novom fade transitione. */
+.menu-row.filter-row {
+  transition: opacity 200ms ease, transform 260ms cubic-bezier(.16, 1, .3, 1),
+    background-color 250ms ease, box-shadow 250ms ease;
+}
+.button-primary:active,
+.button-outline-gold:active,
+.filter-pill:active { transform: translateY(0) scale(.985); transition-duration: 120ms; }
+
+/* --- Jemné animácie: galéria a lightbox --- */
+.reveal-delay-3 { transition-delay: 300ms; }
+.reveal-delay-4 { transition-delay: 400ms; }
+@keyframes lb-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lb-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes lb-image-in { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: scale(1); } }
+@keyframes lb-image-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(.99); } }
+.lightbox-overlay { animation: lb-overlay-in 260ms ease-out both; }
+.lightbox-overlay[data-closing="true"] { animation: lb-overlay-out 220ms ease-in both; pointer-events: none; }
+.lightbox-image { animation: lb-image-in 380ms cubic-bezier(.16, 1, .3, 1) both; }
+.lightbox-overlay[data-closing="true"] .lightbox-image { animation: lb-image-out 200ms ease-in both; }
+
+/* --- Jemné animácie: kontakt --- */
+.contact-phone { position: relative; }
+.contact-phone::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 320ms cubic-bezier(.16, 1, .3, 1);
+}
+.contact-phone:hover::after,
+.contact-phone:focus-visible::after { transform: scaleX(1); }
+.contact-line { transition: color 260ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  address:hover .contact-line { color: var(--ink); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .filter-row[data-phase="out"],
+  .filter-row[data-phase="in"] { opacity: 1; transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

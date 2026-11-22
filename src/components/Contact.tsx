@@ -17,14 +17,14 @@ export default function Contact() {
         <div className="mt-10 grid gap-12 lg:mt-14 lg:grid-cols-2 lg:gap-16">
           <div className="reveal flex flex-col justify-center">
             <address className="not-italic text-base leading-relaxed text-ink">
-              <span className="block font-display text-2xl font-semibold">{CONTACT.name}</span>
-              <span className="mt-3 block text-muted">{CONTACT.address}</span>
-              <span className="block text-muted">{CONTACT.city}</span>
+              <span className="contact-line block font-display text-2xl font-semibold">{CONTACT.name}</span>
+              <span className="contact-line mt-3 block text-muted">{CONTACT.address}</span>
+              <span className="contact-line block text-muted">{CONTACT.city}</span>
             </address>
 
             <a
               href={CONTACT.phoneHref}
-              className="mt-8 inline-flex min-h-[44px] w-fit items-center font-display text-[1.75rem] font-semibold text-tomato-dark transition-colors hover:text-tomato"
+              className="contact-phone mt-8 inline-flex min-h-[44px] w-fit items-center font-display text-[1.75rem] font-semibold text-tomato-dark transition-colors hover:text-tomato"
             >
               {CONTACT.phone}
             </a>

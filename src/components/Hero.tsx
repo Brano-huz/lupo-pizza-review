@@ -61,7 +61,7 @@ export default function Hero() {
         loading="eager"
         fetchPriority="high"
         decoding="async"
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full object-cover object-center hero-image-enter"
       />
       <div
         aria-hidden="true"
@@ -90,21 +90,21 @@ export default function Hero() {
             </div>
           </div>
 
-          <p className="eyebrow eyebrow-gold mt-7 md:mt-9">PIZZERIA · POVAŽSKÁ BYSTRICA</p>
+          <p className="eyebrow eyebrow-gold mt-7 md:mt-9 hero-fade hero-delay-1">PIZZERIA · POVAŽSKÁ BYSTRICA</p>
 
           <h1
             id="hero-title"
-            className="mt-4 max-w-[18ch] font-display font-semibold leading-[0.98] tracking-[-0.02em] text-cream"
+            className="mt-4 max-w-[18ch] font-display font-semibold leading-[0.98] tracking-[-0.02em] text-cream hero-rise hero-delay-2"
             style={{ fontSize: "clamp(2.75rem, 5.2vw, 5.25rem)" }}
           >
             Talianska pizza s <em className="font-medium italic text-gold">vlčou</em> dušou.
           </h1>
 
-          <p className="lead lead-light mt-6 text-[0.95rem] md:text-lg">
+          <p className="lead lead-light mt-6 text-[0.95rem] md:text-lg hero-rise hero-delay-3">
             Ručne vypracované cesto, poctivé suroviny a pizza, ktorá sa oplatí zdieľať. Vitajte v LUPO.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 md:mt-10">
+          <div className="mt-8 flex flex-wrap items-center gap-3 md:mt-10 hero-rise hero-delay-4">
             <Link href="/menu" className="button-primary">
               Pozrieť menu <span aria-hidden="true">→</span>
             </Link>
@@ -115,7 +115,7 @@ export default function Hero() {
 
           <Link
             href="/menu"
-            className="mt-8 inline-flex min-h-[44px] items-center border-b border-gold/40 text-xs font-semibold uppercase tracking-[0.2em] text-gold transition-colors hover:border-gold"
+            className="mt-8 inline-flex min-h-[44px] items-center border-b border-gold/40 text-xs font-semibold uppercase tracking-[0.2em] text-gold transition-colors hover:border-gold hero-fade hero-delay-4"
           >
             13 pízz · 9 príloh
           </Link>

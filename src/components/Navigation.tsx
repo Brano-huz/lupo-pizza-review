@@ -12,6 +12,11 @@ const NAV_ITEMS = [
   { label: "Kontakt", href: "/#kontakt" },
 ] as const;
 
+// Volané iba z useEffect – nikdy počas SSR.
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 function PhoneIcon({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -35,6 +40,8 @@ export default function Navigation() {
   const isHome = router.pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [drawerMounted, setDrawerMounted] = useState(false);
+  const [activeHash, setActiveHash] = useState<string | null>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -50,8 +57,35 @@ export default function Navigation() {
     setMenuOpen(false);
   }, [router.asPath]);
 
+  // Dvojfázové otváranie: drawer najprv pripojíme do DOM, až potým spustíme fade.
   useEffect(() => {
-    if (!menuOpen) return;
+    if (menuOpen) {
+      setDrawerMounted(true);
+      return;
+    }
+    const timeout = setTimeout(() => setDrawerMounted(false), prefersReducedMotion() ? 0 : 300);
+    return () => clearTimeout(timeout);
+  }, [menuOpen]);
+
+  // Aktívna sekcia na homepage – bez nového scroll listenera.
+  useEffect(() => {
+    if (!isHome || typeof IntersectionObserver === "undefined") return;
+    const sections = document.querySelectorAll<HTMLElement>('main section[id], main div[id="menu"]');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const intersecting = entries.filter((entry) => entry.isIntersecting);
+        const current = intersecting[intersecting.length - 1];
+        if (!current) return;
+        setActiveHash(`#${current.target.id}`);
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [isHome]);
+
+  useEffect(() => {
+    if (!menuOpen || !drawerMounted) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -108,9 +142,15 @@ export default function Navigation() {
       document.body.style.overflow = previousOverflow;
       hamburgerRef.current?.focus();
     };
-  }, [menuOpen]);
+  }, [menuOpen, drawerMounted]);
 
   const transparent = isHome && !scrolled;
+
+  const isItemActive = (href: string) => {
+    if (!isHome) return href === "/menu";
+    const target = href === "/menu" ? "#menu" : href.startsWith("/#") ? href.slice(1) : null;
+    return target !== null && activeHash === target;
+  };
 
   const headerClasses = [
     "sticky top-0 z-50 h-[68px] border-b transition-[background-color,border-color,box-shadow,color] duration-300 md:h-[84px]",
@@ -149,9 +189,10 @@ export default function Navigation() {
             <Link
               key={item.label}
               href={item.href}
-              className={`inline-flex min-h-[44px] items-center border-b border-transparent text-[0.8125rem] font-semibold tracking-[0.02em] transition-colors duration-200 hover:border-current ${
+              className={`nav-link inline-flex min-h-[44px] items-center border-b border-transparent text-[0.8125rem] font-semibold tracking-[0.02em] transition-colors duration-200 ${
                 transparent ? "text-cream/90 hover:text-gold" : "text-forest/85 hover:text-tomato-dark"
               }`}
+              aria-current={isItemActive(item.href) ? "location" : undefined}
             >
               {item.label}
             </Link>
@@ -192,9 +233,9 @@ export default function Navigation() {
             aria-label={menuOpen ? "Zavrieť navigáciu" : "Otvoriť navigáciu"}
             onClick={() => setMenuOpen((open) => !open)}
           >
-            <span className="h-px w-5 bg-current" />
-            <span className="h-px w-5 bg-current" />
-            <span className="h-px w-3.5 bg-current" />
+            <span className="hamburger-line h-px w-5 bg-current" />
+            <span className={`hamburger-line h-px w-5 bg-current ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`hamburger-line h-px w-5 bg-current ${menuOpen ? "scale-x-100" : "scale-x-[0.7]"}`} />
           </button>
         </div>
       </div>
@@ -205,10 +246,11 @@ export default function Navigation() {
         role="dialog"
         aria-modal="true"
         aria-label="Mobilná navigácia"
-        hidden={!menuOpen}
-        className="focus-on-dark fixed inset-0 z-[90] overflow-y-auto bg-cream text-forest"
+        hidden={!drawerMounted}
+        data-open={menuOpen}
+        className="focus-on-dark mobile-drawer fixed inset-0 z-[90] overflow-y-auto bg-cream text-forest"
       >
-        <div className="container flex min-h-full flex-col py-6">
+        <div className="container mobile-drawer__panel flex min-h-full flex-col py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Emblem className="h-[34px] w-[34px] text-forest" />
@@ -245,7 +287,8 @@ export default function Navigation() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="group flex min-h-[64px] items-center gap-5 border-b border-line py-3"
+                className="nav-link group flex min-h-[64px] items-center gap-5 border-b border-line py-3"
+                aria-current={isItemActive(item.href) ? "location" : undefined}
                 onClick={() => setMenuOpen(false)}
               >
                 <span className="font-display text-sm text-gold-deep tabular-nums">

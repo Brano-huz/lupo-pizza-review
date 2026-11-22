@@ -55,7 +55,7 @@ export default function About() {
           </div>
         </div>
 
-        <div className="order-1 lg:order-2">
+        <div className="reveal reveal-delay-1 order-1 lg:order-2">
           <p className="eyebrow eyebrow-gold">
             <span className="tabular-nums">03 /</span> NÁŠ PRÍBEH
           </p>
@@ -64,7 +64,7 @@ export default function About() {
             Láska k cestu. Vlčia vytrvalosť.
           </h2>
 
-          <div className="prose lead lead-light reveal mt-6">
+          <div className="prose lead lead-light mt-6">
             <p>
               LUPO nie je len názov. Je to pripomienka, že dobrá pizza vzniká trpezlivosťou – od prvého
               hnetenia cesta až po okamih, keď vyjde z pece.
@@ -78,8 +78,11 @@ export default function About() {
           <span className="gold-line-long my-8" aria-hidden="true" />
 
           <ul className="space-y-5">
-            {VALUES.map((value) => (
-              <li key={value.number} className="flex gap-5 border-b border-cream/15 pb-5">
+            {VALUES.map((value, index) => (
+              <li
+                key={value.number}
+                className={`reveal reveal-delay-${(index % 3) + 1} flex gap-5 border-b border-cream/15 pb-5`}
+              >
                 <span className="font-display text-lg font-semibold text-gold tabular-nums">
                   {value.number}
                 </span>

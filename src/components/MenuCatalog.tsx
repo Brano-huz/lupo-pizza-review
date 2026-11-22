@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PIZZAS, PIZZA_CATEGORIES, PRILOHY, formatPrice } from "../data/menu";
 
 type Filter = (typeof PIZZA_CATEGORIES)[number];
@@ -16,6 +16,36 @@ interface MenuCatalogProps {
 
 export default function MenuCatalog({ id }: MenuCatalogProps) {
   const [active, setActive] = useState<Filter>("Všetky");
+  const [paintActive, setPaintActive] = useState<Filter>("Všetky");
+  const [phase, setPhase] = useState<"idle" | "out" | "in">("idle");
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const frameRef = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    },
+    [],
+  );
+
+  const handleCategory = (category: Filter) => {
+    setActive(category);
+
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPaintActive(category);
+      setPhase("idle");
+      return;
+    }
+
+    setPhase("out");
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setPaintActive(category);
+      setPhase("in");
+      frameRef.current = requestAnimationFrame(() => setPhase("idle"));
+    }, 180);
+  };
 
   const counts = useMemo(
     () =>
@@ -49,7 +79,7 @@ export default function MenuCatalog({ id }: MenuCatalogProps) {
                 type="button"
                 className="filter-pill"
                 aria-pressed={active === category}
-                onClick={() => setActive(category)}
+                onClick={() => handleCategory(category)}
               >
                 {category}
                 <span className="filter-count" aria-hidden="true">
@@ -66,7 +96,7 @@ export default function MenuCatalog({ id }: MenuCatalogProps) {
       </div>
 
       <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)] lg:gap-16">
-        <section aria-labelledby="menu-pizze-title">
+        <section aria-labelledby="menu-pizze-title" className="reveal">
           <div className="flex items-baseline justify-between gap-4">
             <h3 id="menu-pizze-title" className="font-display text-[2rem] font-semibold text-ink">
               Pizze
@@ -78,12 +108,12 @@ export default function MenuCatalog({ id }: MenuCatalogProps) {
 
           <ul className="mt-4 divide-y divide-line">
             {PIZZAS.map((pizza, index) => {
-              const visible = active === "Všetky" || pizza.category === active;
               return (
                 <li
                   key={pizza.id}
-                  hidden={!visible}
-                  className="menu-row grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-x-3 px-2 py-4 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:gap-x-5 sm:px-3"
+                  hidden={!(paintActive === "Všetky" || pizza.category === paintActive)}
+                  data-phase={phase}
+                  className="menu-row filter-row grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-x-3 px-2 py-4 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:gap-x-5 sm:px-3"
                 >
                   <span className="menu-row-number pt-1 font-display text-xl font-semibold text-gold-deep sm:text-2xl tabular-nums">
                     {String(index + 1).padStart(2, "0")}
@@ -124,17 +154,17 @@ export default function MenuCatalog({ id }: MenuCatalogProps) {
           </ul>
         </section>
 
-        <section aria-labelledby="menu-prilohy-title">
+        <section aria-labelledby="menu-prilohy-title" className="reveal reveal-delay-1">
           <h3 id="menu-prilohy-title" className="font-display text-[2rem] font-semibold text-ink">
             Prílohy
           </h3>
           <p className="mt-1 text-sm text-muted">Niečo navyše k vašej pizzi.</p>
 
           <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            {PRILOHY.map((priloha) => (
+            {PRILOHY.map((priloha, index) => (
               <li
                 key={priloha.id}
-                className="priloha-card flex min-h-[68px] items-center justify-between gap-3 rounded-soft border border-line bg-cream px-4 py-3 transition duration-300 hover:-translate-y-0.5 hover:border-gold hover:shadow-card"
+                className={`priloha-card reveal reveal-delay-${(index % 2) + 1} flex min-h-[68px] items-center justify-between gap-3 rounded-soft border border-line bg-cream px-4 py-3 transition duration-300 hover:-translate-y-0.5 hover:border-gold hover:shadow-card`}
               >
                 <span className="text-sm font-semibold leading-snug text-ink">{priloha.name}</span>
                 <span className="whitespace-nowrap font-display text-lg font-semibold text-tomato tabular-nums">

@@ -22,7 +22,8 @@ tools/
 # Local Windows helper scripts and QA scripts (not part of the deployed app)
 *.cmd
 *.ps1
-scripts/
+scripts/*
+!scripts/ui-data-consistency.js
 
 # OS / editor noise
 .DS_Store

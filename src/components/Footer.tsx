@@ -55,7 +55,7 @@ export default function Footer() {
             </address>
             <a
               href={CONTACT.phoneHref}
-              className="mt-3 inline-flex min-h-[44px] items-center text-sm text-cream/75 transition-colors hover:text-cream"
+              className="mt-3 inline-flex min-h-[44px] items-center text-sm text-cream/75 transition-colors hover:text-gold"
             >
               {CONTACT.phone}
             </a>
@@ -63,7 +63,7 @@ export default function Footer() {
               href={CONTACT.web}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex min-h-[44px] items-center text-sm text-cream/75 transition-colors hover:text-cream"
+              className="flex min-h-[44px] items-center text-sm text-cream/75 transition-colors hover:text-gold"
             >
               pizzalupo.sk <span aria-hidden="true">↗</span>
             </a>

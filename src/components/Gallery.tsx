@@ -22,6 +22,8 @@ const GALLERY = [
 
 export default function Gallery() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [rendered, setRendered] = useState(false);
+  const [displayIndex, setDisplayIndex] = useState(0);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
@@ -29,6 +31,8 @@ export default function Gallery() {
 
   const openLightbox = (index: number, event: MouseEvent<HTMLButtonElement>) => {
     triggerRef.current = event.currentTarget;
+    // Pripojíme portal v tom istom commite, aby existujúci focus efekt mal kam presunúť focus.
+    setRendered(true);
     setActiveIndex(index);
   };
 
@@ -102,6 +106,25 @@ export default function Gallery() {
     };
   }, [isOpen]);
 
+  // Dvojfázový render: pri zatváraní necháme overlay ešte krátko v DOM pre fade-out.
+  useEffect(() => {
+    if (isOpen) {
+      setRendered(true);
+      return;
+    }
+    const timeout = setTimeout(
+      () => setRendered(false),
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 0
+        : 220,
+    );
+    return () => clearTimeout(timeout);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (activeIndex !== null) setDisplayIndex(activeIndex);
+  }, [activeIndex]);
+
   return (
     <section id="galeria" aria-labelledby="galeria-title" className="bg-cream-2 py-20 md:py-28">
       <div className="container">
@@ -123,7 +146,7 @@ export default function Gallery() {
             <button
               key={image.src}
               type="button"
-              className={`group relative overflow-hidden rounded-card border border-line bg-cream-3 text-left shadow-card transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-card-hover ${
+              className={`reveal reveal-delay-${index + 1} group relative overflow-hidden rounded-card border border-line bg-cream-3 text-left shadow-card transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-card-hover ${
                 index === 0 ? "col-span-2 aspect-[16/9] md:col-span-2 md:row-span-2" : "aspect-[4/3]"
               }`}
               onClick={(event) => openLightbox(index, event)}
@@ -136,7 +159,7 @@ export default function Gallery() {
                 height={index === 0 ? 675 : 480}
                 loading="lazy"
                 decoding="async"
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.05]"
               />
               <span className="absolute bottom-3 right-3 inline-flex h-9 items-center rounded-full bg-forest-deep/80 px-3 text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-cream opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
                 Zväčšiť
@@ -146,10 +169,14 @@ export default function Gallery() {
         </div>
       </div>
 
-      {activeIndex !== null && typeof document !== "undefined"
+      {rendered && typeof document !== "undefined"
         ? createPortal(
         <div
-          className="focus-on-dark fixed inset-0 z-[100] flex flex-col bg-forest-deep/95 p-4 text-cream backdrop-blur-sm md:p-8"
+          className={`lightbox-overlay focus-on-dark fixed inset-0 z-[100] flex flex-col bg-forest-deep/95 p-4 text-cream backdrop-blur-sm md:p-8${
+            !isOpen ? " pointer-events-none" : ""
+          }`}
+          data-closing={!isOpen}
+          aria-hidden={!isOpen ? "true" : undefined}
           role="dialog"
           aria-modal="true"
           aria-label="Galéria – zobrazenie fotografie"
@@ -160,7 +187,7 @@ export default function Gallery() {
         >
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
             <span className="text-xs font-bold uppercase tracking-[0.24em] text-gold tabular-nums">
-              {String(activeIndex + 1).padStart(2, "0")} / {String(GALLERY.length).padStart(2, "0")}
+              {String(displayIndex + 1).padStart(2, "0")} / {String(GALLERY.length).padStart(2, "0")}
             </span>
             <button
               ref={closeRef}
@@ -191,17 +218,19 @@ export default function Gallery() {
             }}
           >
             <img
-              src={GALLERY[activeIndex].src}
-              alt={GALLERY[activeIndex].alt}
+              key={displayIndex}
+              src={GALLERY[displayIndex].src}
+              alt={GALLERY[displayIndex].alt}
               width={1200}
               height={800}
-              className="max-h-[76vh] max-w-full rounded-soft object-contain shadow-image"
+              decoding="async"
+              className="lightbox-image max-h-[76vh] max-w-full rounded-soft object-contain shadow-image"
             />
           </div>
 
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
             <p className="max-w-[70%] text-xs leading-relaxed text-cream/70 md:text-sm">
-              {GALLERY[activeIndex].alt}
+              {GALLERY[displayIndex].alt}
             </p>
             <div className="flex items-center gap-2">
               <button
