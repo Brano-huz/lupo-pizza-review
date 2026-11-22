@@ -185,15 +185,18 @@ export default function Navigation() {
         </Link>
 
         <nav aria-label="Hlavná navigácia" className="hidden items-center gap-7 lg:flex">
-          {NAV_ITEMS.map((item) => (
+          {NAV_ITEMS.map((item, index) => (
             <Link
               key={item.label}
               href={item.href}
-              className={`nav-link inline-flex min-h-[44px] items-center border-b border-transparent text-[0.8125rem] font-semibold tracking-[0.02em] transition-colors duration-200 ${
-                transparent ? "text-cream/90 hover:text-gold" : "text-forest/85 hover:text-tomato-dark"
+              className={`nav-link inline-flex min-h-[44px] items-center gap-2 border-b border-transparent text-[0.8125rem] font-semibold tracking-[0.02em] transition-colors duration-200 ${
+                transparent ? "text-cream/90 hover:text-flame" : "text-forest/85 hover:text-ember-deep"
               }`}
               aria-current={isItemActive(item.href) ? "location" : undefined}
             >
+              <span className="text-[0.6rem] font-bold text-flame/80 tabular-nums" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               {item.label}
             </Link>
           ))}
@@ -211,6 +214,13 @@ export default function Navigation() {
             <PhoneIcon className="h-4 w-4" />
             {CONTACT.phone}
           </a>
+
+          <Link
+            href="/menu"
+            className="button-primary hidden min-h-[44px] px-5 py-2 text-[0.8125rem] xl:inline-flex"
+          >
+            Objednať <span aria-hidden="true">→</span>
+          </Link>
 
           <a
             href={CONTACT.phoneHref}
@@ -291,10 +301,10 @@ export default function Navigation() {
                 aria-current={isItemActive(item.href) ? "location" : undefined}
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="font-display text-sm text-gold-deep tabular-nums">
+                <span className="font-display text-sm text-flame tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <span className="font-display text-[2rem] font-semibold leading-none transition-colors duration-200 group-hover:text-tomato-dark">
+                <span className="font-display text-[2rem] font-semibold leading-none transition-colors duration-200 group-hover:text-ember-deep">
                   {item.label}
                 </span>
               </Link>

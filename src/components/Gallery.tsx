@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
+import { ChapterGhost } from "./FornoMarks";
 
 const GALLERY = [
   {
@@ -126,12 +127,13 @@ export default function Gallery() {
   }, [activeIndex]);
 
   return (
-    <section id="galeria" aria-labelledby="galeria-title" className="bg-cream-2 py-20 md:py-28">
-      <div className="container">
+    <section id="galeria" aria-labelledby="galeria-title" className="relative overflow-hidden bg-cream-2 py-20 md:py-28">
+      <ChapterGhost className="pointer-events-none absolute -right-8 bottom-0 hidden lg:block">04</ChapterGhost>
+      <div className="container relative z-10">
         <div className="reveal flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="eyebrow eyebrow-muted">
-              <span className="text-gold-deep tabular-nums">04 /</span> Z KUCHYNE
+            <p className="chapter">
+              <span className="tabular-nums">04 /</span> Z KUCHYNE
             </p>
             <span className="linea-rossa" aria-hidden="true" />
             <h2 id="galeria-title" className="section-title mt-5">
@@ -146,7 +148,7 @@ export default function Gallery() {
             <button
               key={image.src}
               type="button"
-              className={`reveal reveal-delay-${index + 1} group relative overflow-hidden rounded-card border border-line bg-cream-3 text-left shadow-card transition duration-300 hover:-translate-y-1 hover:border-gold hover:shadow-card-hover ${
+              className={`reveal reveal-delay-${index + 1} group relative overflow-hidden border border-line bg-cream-3 text-left warm-shadow transition duration-300 hover:-translate-y-1 hover:border-ember ${
                 index === 0 ? "col-span-2 aspect-[16/9] md:col-span-2 md:row-span-2" : "aspect-[4/3]"
               }`}
               onClick={(event) => openLightbox(index, event)}
@@ -161,7 +163,7 @@ export default function Gallery() {
                 decoding="async"
                 className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.05]"
               />
-              <span className="absolute bottom-3 right-3 inline-flex h-9 items-center rounded-full bg-forest-deep/80 px-3 text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-cream opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="absolute bottom-3 right-3 inline-flex h-9 items-center rounded-full bg-char-deep/85 px-3 text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-flame opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
                 Zväčšiť
               </span>
             </button>
@@ -186,13 +188,13 @@ export default function Gallery() {
           }}
         >
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
-            <span className="text-xs font-bold uppercase tracking-[0.24em] text-gold tabular-nums">
+            <span className="text-xs font-bold uppercase tracking-[0.24em] text-flame tabular-nums">
               {String(displayIndex + 1).padStart(2, "0")} / {String(GALLERY.length).padStart(2, "0")}
             </span>
             <button
               ref={closeRef}
               type="button"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream/40 text-cream transition-colors hover:bg-cream hover:text-forest-deep"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-flame/50 text-flame transition-colors hover:bg-flame hover:text-char-deep"
               aria-label="Zavrieť galériu"
               onClick={() => setActiveIndex(null)}
             >
@@ -235,7 +237,7 @@ export default function Gallery() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream/40 text-cream transition-colors hover:bg-cream hover:text-forest-deep"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-flame/50 text-flame transition-colors hover:bg-flame hover:text-char-deep"
                 aria-label="Predchádzajúca fotografia"
                 onClick={() =>
                   setActiveIndex((current) =>
@@ -247,7 +249,7 @@ export default function Gallery() {
               </button>
               <button
                 type="button"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream/40 text-cream transition-colors hover:bg-cream hover:text-forest-deep"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-flame/50 text-flame transition-colors hover:bg-flame hover:text-char-deep"
                 aria-label="Ďalšia fotografia"
                 onClick={() =>
                   setActiveIndex((current) =>

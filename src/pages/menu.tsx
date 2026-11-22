@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Emblem from "../components/Emblem";
 import Footer from "../components/Footer";
+import { HeatAura } from "../components/FornoMarks";
 import MenuCatalog from "../components/MenuCatalog";
 import Navigation from "../components/Navigation";
 import Seo from "../components/Seo";
@@ -35,8 +36,9 @@ export default function MenuPage() {
           <div
             aria-hidden="true"
             className="absolute inset-0"
-            style={{ backgroundColor: "rgba(15,34,26,.86)" }}
+            style={{ backgroundImage: "linear-gradient(90deg, rgba(22,16,13,.96), rgba(22,16,13,.80))" }}
           />
+          <HeatAura className="absolute -right-32 -top-40 h-[620px] w-[620px] opacity-45" />
 
           <div className="container relative z-10">
             <nav aria-label="Breadcrumb" className="text-xs font-semibold uppercase tracking-[0.16em]">
@@ -57,13 +59,14 @@ export default function MenuPage() {
               <Emblem className="h-[48px] w-[48px] flex-none text-gold" />
               <span className="hidden h-12 w-px bg-gold/40 sm:block" aria-hidden="true" />
               <div>
-                <h1 id="menu-band-title" className="font-display text-[clamp(2.75rem,6vw,4.75rem)] font-semibold leading-none text-cream">
+                <h1 id="menu-band-title" className="hero-display text-[clamp(3.25rem,7vw,6rem)] text-cream">
                   Naše menu
                 </h1>
-                <span className="gold-line mt-4" aria-hidden="true" />
+                <div className="flame-rule mt-5 max-w-[220px]" aria-hidden="true" />
               </div>
             </div>
-            <p className="lead lead-light mt-6">13 pízz. 9 príloh. Vyberte si.</p>
+            <p className="chapter chapter-on-dark mt-6">FORNO · 02 / KAPITOLA</p>
+            <p className="lead lead-light mt-3">13 pízz. 9 príloh. Vyberte si.</p>
           </div>
         </section>
 

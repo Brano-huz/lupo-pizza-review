@@ -7,7 +7,7 @@ export default function Document() {
   return (
     <Html lang="sk">
       <Head>
-        <meta name="theme-color" content="#16382E" />
+        <meta name="theme-color" content="#16100D" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

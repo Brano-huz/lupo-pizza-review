@@ -3,6 +3,7 @@ import About from "../components/About";
 import Contact from "../components/Contact";
 import Favorites from "../components/Favorites";
 import Footer from "../components/Footer";
+import { ChapterGhost } from "../components/FornoMarks";
 import Gallery from "../components/Gallery";
 import Hero from "../components/Hero";
 import MenuCatalog from "../components/MenuCatalog";
@@ -49,11 +50,12 @@ export default function Home() {
         <Hero />
         <Favorites />
 
-        <section aria-labelledby="home-menu-title" className="bg-cream py-20 md:py-28">
-          <div className="container">
+        <section aria-labelledby="home-menu-title" className="relative overflow-hidden bg-cream py-20 md:py-28">
+          <ChapterGhost className="pointer-events-none absolute -right-6 -top-8 hidden lg:block">02</ChapterGhost>
+          <div className="container relative z-10">
             <div className="reveal">
-              <p className="eyebrow eyebrow-muted">
-                <span className="text-gold-deep tabular-nums">02 /</span> MENU
+              <p className="chapter">
+                <span className="tabular-nums">02 /</span> MENU
               </p>
               <span className="linea-rossa" aria-hidden="true" />
               <h2 id="home-menu-title" className="section-title mt-5">
